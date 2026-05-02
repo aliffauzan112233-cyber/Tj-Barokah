@@ -72,6 +72,47 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Counter Animation
+    const counters = document.querySelectorAll('.count-num');
+    const animateCounters = () => {
+        counters.forEach(counter => {
+            const target = +counter.innerText;
+            const count = +counter.innerText.replace(/[^0-9]/g, '') || 0;
+            const increment = target / 100;
+            
+            let current = 0;
+            const updateCount = () => {
+                if (current < target) {
+                    current += increment;
+                    counter.innerText = Math.ceil(current) + (target === 500 || target === 100 ? '+' : '');
+                    setTimeout(updateCount, 20);
+                } else {
+                    counter.innerText = target + '+';
+                }
+            };
+            
+            updateCount();
+        });
+    };
+
+    const counterSection = document.querySelector('.counter-container');
+    if (counterSection) {
+        const observerOptions = {
+            threshold: 0.5
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounters();
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        observer.observe(counterSection);
+    }
+
     console.log('Trisno Jaya Barokah Website - Modern UI Loaded');
 });
 
