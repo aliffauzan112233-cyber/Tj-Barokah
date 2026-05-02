@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin | Trisno Jaya Barokah</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                <img src="logo.png" alt="Logo" style="height: 40px; filter: brightness(0) invert(1);">
+                <span style="font-weight: 900; font-size: 1.2rem;">TJB ADMIN</span>
+            </div>
+            
+            <nav class="admin-nav">
+                <ul>
+                    <li><a href="#" class="active"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                    <li><a href="#"><i class="fas fa-box"></i> Produk</a></li>
+                    <li><a href="#"><i class="fas fa-shopping-cart"></i> Pesanan</a></li>
+                    <li><a href="#"><i class="fas fa-users"></i> Pelanggan</a></li>
+                    <li style="margin-top: 50px;"><a href="index.html" style="color: var(--accent);"><i class="fas fa-external-link-alt"></i> Lihat Toko</a></li>
+                    <li><a href="login.html"><i class="fas fa-sign-out-alt"></i> Keluar</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <header class="admin-header">
+                <div>
+                    <h1 style="font-size: 2rem; color: var(--primary);">Selamat Datang, <span>Admin</span></h1>
+                    <p style="color: var(--text-muted);">Kelola toko dan produk Anda hari ini.</p>
+                </div>
+                <div class="admin-user-profile" style="display: flex; align-items: center; gap: 15px;">
+                    <div style="text-align: right;">
+                        <strong style="display: block;">Admin TJB</strong>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">Owner</span>
+                    </div>
+                    <div style="width: 50px; height: 50px; background: var(--secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 800;">A</div>
+                </div>
+            </header>
+
+            <!-- Stats Overview -->
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-box-open"></i></div>
+                    <div>
+                        <span style="color: var(--text-muted); font-size: 0.9rem;">Total Produk</span>
+                        <h3 style="font-size: 1.5rem; color: var(--primary);">24</h3>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-shopping-basket"></i></div>
+                    <div>
+                        <span style="color: var(--text-muted); font-size: 0.9rem;">Pesanan Baru</span>
+                        <h3 style="font-size: 1.5rem; color: var(--primary);">12</h3>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-wallet"></i></div>
+                    <div>
+                        <span style="color: var(--text-muted); font-size: 0.9rem;">Pendapatan</span>
+                        <h3 style="font-size: 1.5rem; color: var(--primary);">Rp 2.4M</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Management -->
+            <div class="admin-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                    <h2 style="font-size: 1.5rem; color: var(--primary);">Manajemen Produk</h2>
+                    <button class="btn-primary" id="add-product-btn">
+                        <i class="fas fa-plus"></i> Tambah Produk Baru
+                    </button>
+                </div>
+
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Gambar</th>
+                            <th>Nama Produk</th>
+                            <th>Kategori</th>
+                            <th>Harga</th>
+                            <th>Stok</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="product-list">
+                        <tr>
+                            <td><img src="./img/ayam1.jpg" alt="Ayam" class="product-row-img"></td>
+                            <td><strong>Ayam Broiler Utuh</strong></td>
+                            <td>Ayam Utuh</td>
+                            <td>Rp 35.000</td>
+                            <td><span style="color: #10b981; font-weight: 700;">Tersedia</span></td>
+                            <td>
+                                <button style="border: none; background: none; color: var(--primary); cursor: pointer; margin-right: 10px;"><i class="fas fa-edit"></i></button>
+                                <button style="border: none; background: none; color: #ef4444; cursor: pointer;"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><img src="https://images.unsplash.com/photo-1604503468506-a8da13d82791?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Fillet" class="product-row-img"></td>
+                            <td><strong>Fillet Dada Ayam</strong></td>
+                            <td>Potongan</td>
+                            <td>Rp 55.000</td>
+                            <td><span style="color: #10b981; font-weight: 700;">Tersedia</span></td>
+                            <td>
+                                <button style="border: none; background: none; color: var(--primary); cursor: pointer; margin-right: 10px;"><i class="fas fa-edit"></i></button>
+                                <button style="border: none; background: none; color: #ef4444; cursor: pointer;"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Simulation -->
+    <div id="add-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center;">
+        <div class="admin-card" style="width: 100%; max-width: 600px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 30px;">
+                <h3 style="font-size: 1.5rem;">Tambah Produk Baru</h3>
+                <button id="close-modal" style="border: none; background: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            </div>
+            <form id="add-product-form">
+                <div class="form-group">
+                    <label>Nama Produk</label>
+                    <input type="text" class="form-control" placeholder="Contoh: Ayam Kampung Utuh" required>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-group">
+                        <label>Kategori</label>
+                        <select class="form-control">
+                            <option>Ayam Utuh</option>
+                            <option>Potongan</option>
+                            <option>Fillet</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Harga (Rp)</label>
+                        <input type="number" class="form-control" placeholder="35000" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>URL Gambar</label>
+                    <input type="url" class="form-control" placeholder="https://..." required>
+                </div>
+                <div style="margin-top: 30px;">
+                    <button type="submit" class="btn-primary btn-full">Simpan & Publikasikan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('add-modal');
+        const addBtn = document.getElementById('add-product-btn');
+        const closeBtn = document.getElementById('close-modal');
+
+        addBtn.onclick = () => modal.style.display = 'flex';
+        closeBtn.onclick = () => modal.style.display = 'none';
+        window.onclick = (e) => { if (e.target == modal) modal.style.display = 'none'; }
+
+        document.getElementById('add-product-form').onsubmit = (e) => {
+            e.preventDefault();
+            alert('Produk berhasil ditambahkan! (Simulasi)');
+            modal.style.display = 'none';
+        }
+    </script>
+</body>
+</html>

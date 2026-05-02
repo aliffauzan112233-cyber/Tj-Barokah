@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Admin | Trisno Jaya Barokah</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-page">
+
+    <!-- Flying Elements for ambiance -->
+    <div class="flying-element fly-1"></div>
+    <div class="flying-element fly-3"></div>
+
+    <div class="login-card">
+        <a href="index.html" style="text-decoration: none; display: inline-block; margin-bottom: 20px;">
+            <img src="logo.png" alt="Logo" style="height: 60px;">
+        </a>
+        <h2>Admin <span>Login</span></h2>
+        <p style="color: var(--text-muted); margin-bottom: 30px;">Silakan masuk untuk mengelola produk Anda.</p>
+        
+        <form id="login-form">
+            <div class="form-group">
+                <label for="email">Username atau Email</label>
+                <input type="text" id="email" class="form-control" placeholder="Masukkan username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Kata Sandi</label>
+                <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+            </div>
+            <div style="text-align: right; margin-bottom: 30px;">
+                <a href="#" style="color: var(--primary); font-size: 0.85rem; font-weight: 700; text-decoration: none;">Lupa sandi?</a>
+            </div>
+            <button type="submit" class="btn-primary btn-full" style="padding: 15px;">
+                Masuk ke Dashboard
+            </button>
+        </form>
+        
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--gray-100);">
+            <a href="index.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;">
+                <i class="fas fa-arrow-left"></i> Kembali ke Beranda
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Simulation: Any login works for this demo
+            window.location.href = 'admin.html';
+        });
+    </script>
+</body>
+</html>
