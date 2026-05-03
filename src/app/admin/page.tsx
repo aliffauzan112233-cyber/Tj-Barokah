@@ -1,252 +1,424 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { 
-  LayoutDashboard, 
-  Package, 
-  ShoppingCart, 
-  Users, 
-  Settings, 
-  Plus, 
-  Trash2, 
-  LogOut, 
-  ExternalLink, 
-  Search,
-  Bell,
-  CheckCircle2,
-  AlertCircle
-} from "lucide-react";
-import { getProducts, deleteProduct, addProduct } from "@/app/actions";
+import { useState, useEffect } from "react";
+import { getProducts, deleteProduct, addProduct, updateProduct } from "@/app/actions";
 import Link from "next/link";
 
-export default function AdminDashboard() {
-  const [products, setProducts] = useState<any[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
+type Product = {
+  id: number;
+  name: string;
+  price: string;
+  stock: number;
+  imageUrl: string | null;
+  description: string | null;
+};
 
-  useEffect(() => {
-    async function load() {
-      const data = await getProducts();
-      setProducts(data);
-      setLoading(false);
-    }
-    load();
-  }, []);
+type ModalState =
+  | { type: "closed" }
+  | { type: "add" }
+  | { type: "edit"; product: Product };
+
+export default function AdminPage() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [modal, setModal] = useState<ModalState>({ type: "closed" });
+  const [saving, setSaving] = useState(false);
+  const [search, setSearch] = useState("");
+  const [deleteId, setDeleteId] = useState<number | null>(null);
+
+  const reload = async () => {
+    setLoading(true);
+    const data = await getProducts();
+    setProducts(data as Product[]);
+    setLoading(false);
+  };
+
+  useEffect(() => { reload(); }, []);
 
   const handleDelete = async (id: number) => {
-    if (confirm("Hapus produk ini?")) {
-      await deleteProduct(id);
-      const data = await getProducts();
-      setProducts(data);
-    }
+    setDeleteId(id);
+    await deleteProduct(id);
+    setDeleteId(null);
+    reload();
   };
 
-  const handleAdd = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setSaving(true);
     const formData = new FormData(e.currentTarget);
-    await addProduct(formData);
-    setIsModalOpen(false);
-    const data = await getProducts();
-    setProducts(data);
+    if (modal.type === "edit") {
+      await updateProduct(modal.product.id, formData);
+    } else {
+      await addProduct(formData);
+    }
+    setSaving(false);
+    setModal({ type: "closed" });
+    reload();
   };
+
+  const filtered = products.filter((p) =>
+    p.name.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const totalStock = products.reduce((s, p) => s + p.stock, 0);
+  const inStock = products.filter((p) => p.stock > 0).length;
+  const outOfStock = products.filter((p) => p.stock === 0).length;
 
   return (
-    <div className="flex min-h-screen bg-background text-white font-outfit">
-      {/* Sidebar */}
-      <aside className="w-72 glass border-r border-white/5 sticky top-0 h-screen p-8 flex flex-col">
-        <div className="flex items-center gap-3 mb-12">
-          <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20 font-black">TJ</div>
+    <div className="admin-wrapper">
+      {/* ═══════════════════════════════
+          SIDEBAR
+      ══════════════════════════════ */}
+      <aside className="admin-sidebar">
+        {/* Logo */}
+        <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "2.5rem" }}>
+          <div style={{
+            width: "42px", height: "42px", borderRadius: "12px",
+            background: "#16a34a", display: "flex", alignItems: "center",
+            justifyContent: "center", fontWeight: 900, color: "#fff",
+            fontSize: "15px", boxShadow: "0 4px 20px rgba(22,163,74,0.3)"
+          }}>TJ</div>
           <div>
-            <span className="font-black text-lg block leading-none">ADMIN</span>
-            <span className="text-secondary text-[10px] font-bold tracking-widest">TJB PANEL</span>
+            <div style={{ fontWeight: 900, fontSize: "13px", color: "#f0f6fc", letterSpacing: "-0.02em" }}>ADMIN PANEL</div>
+            <div style={{ fontSize: "9px", fontWeight: 900, letterSpacing: "0.25em", textTransform: "uppercase", color: "#f59e0b" }}>Trisno Jaya Barokah</div>
           </div>
         </div>
 
-        <nav className="flex-1 space-y-2">
-          <SidebarLink icon={<LayoutDashboard size={20} />} label="Overview" active />
-          <SidebarLink icon={<Package size={20} />} label="Produk Ayam" />
-          <SidebarLink icon={<ShoppingCart size={20} />} label="Pesanan" />
-          <SidebarLink icon={<Users size={20} />} label="Pelanggan" />
-          <SidebarLink icon={<Settings size={20} />} label="Settings" />
+        {/* Nav */}
+        <nav style={{ flex: 1, display: "flex", flexDirection: "column", gap: "4px" }}>
+          {[
+            { icon: "fa-chart-line", label: "Dashboard", active: true },
+            { icon: "fa-box-open", label: "Manajemen Produk", active: false },
+            { icon: "fa-shopping-cart", label: "Pesanan", active: false },
+            { icon: "fa-users", label: "Pelanggan", active: false },
+          ].map((l) => (
+            <div key={l.label} className={`sidebar-link${l.active ? " active" : ""}`}>
+              <i className={`fas ${l.icon}`} style={{ width: "18px", textAlign: "center" }} />
+              <span>{l.label}</span>
+            </div>
+          ))}
         </nav>
 
-        <div className="mt-auto pt-8 border-t border-white/5 space-y-4">
-          <Link href="/" className="flex items-center gap-4 text-gray-400 hover:text-secondary transition-colors font-bold text-sm">
-            <ExternalLink size={18} /> Lihat Website
+        {/* Bottom */}
+        <div style={{ marginTop: "auto", paddingTop: "1.5rem", borderTop: "1px solid rgba(255,255,255,0.07)", display: "flex", flexDirection: "column", gap: "4px" }}>
+          <Link href="/" target="_blank" className="sidebar-link">
+            <i className="fas fa-arrow-up-right-from-square" style={{ width: "18px", textAlign: "center", color: "#f59e0b" }} />
+            <span>Lihat Website</span>
           </Link>
-          <Link href="/login" className="flex items-center gap-4 text-gray-400 hover:text-red-500 transition-colors font-bold text-sm">
-            <LogOut size={18} /> Logout
+          <Link href="/login" className="sidebar-link" style={{ color: "rgba(248,113,113,0.7)" }}>
+            <i className="fas fa-right-from-bracket" style={{ width: "18px", textAlign: "center" }} />
+            <span>Logout</span>
           </Link>
         </div>
       </aside>
 
-      {/* Main Content */}
-      <main className="flex-1 p-12 overflow-y-auto">
-        <header className="flex justify-between items-center mb-12">
-          <div>
-            <h1 className="text-3xl font-black mb-2 uppercase tracking-tight">Dashboard <span className="text-primary">Overview</span></h1>
-            <p className="text-gray-500 font-bold text-sm">Kelola stok ayam dan telur secara real-time.</p>
-          </div>
-          <div className="flex items-center gap-6">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
-              <input type="text" placeholder="Cari produk..." className="bg-white/5 border border-white/10 rounded-2xl py-3 pl-12 pr-6 text-sm focus:outline-none focus:border-primary transition-colors" />
-            </div>
-            <button className="bg-white/5 p-3 rounded-2xl border border-white/10 relative">
-              <Bell size={20} />
-              <span className="absolute top-3 right-3 w-2 h-2 bg-primary rounded-full border-2 border-background"></span>
-            </button>
-          </div>
-        </header>
+      {/* ═══════════════════════════════
+          MAIN CONTENT
+      ══════════════════════════════ */}
+      <main className="admin-main">
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-          <StatCard label="Total Stok" value={products.length} icon={<Package className="text-primary" />} change="+12%" />
-          <StatCard label="Pesanan Baru" value="24" icon={<ShoppingCart className="text-secondary" />} change="+5" />
-          <StatCard label="Revenue" value="Rp 12.4M" icon={<CheckCircle2 className="text-green-500" />} change="+8.2%" />
-          <StatCard label="Alerts" value="2" icon={<AlertCircle className="text-red-500" />} change="Check stock" />
+        {/* Header */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem", marginBottom: "2rem" }}>
+          <div>
+            <h1 style={{ fontSize: "1.875rem", fontWeight: 900, letterSpacing: "-0.02em", marginBottom: "4px" }}>
+              Dashboard <span style={{ color: "#22c55e" }}>Overview</span>
+            </h1>
+            <p style={{ fontSize: "13px", fontWeight: 600, color: "#8b949e" }}>
+              Kelola semua produk ayam dan telur secara real-time.
+            </p>
+          </div>
+
+          {/* Search */}
+          <div style={{ position: "relative" }}>
+            <i className="fas fa-search" style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", color: "#8b949e", fontSize: "13px" }} />
+            <input
+              type="text"
+              placeholder="Cari produk..."
+              className="form-input"
+              style={{ paddingLeft: "40px", width: "220px", paddingTop: "10px", paddingBottom: "10px" }}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
         </div>
 
-        {/* Product List */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="glass-card rounded-[32px] p-8"
-        >
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-xl font-black uppercase tracking-widest">Daftar Produk Unggulan</h2>
-            <button 
-              onClick={() => setIsModalOpen(true)}
-              className="bg-primary hover:bg-primary-dark px-6 py-3 rounded-2xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-primary/20"
+        {/* ── Stat Cards ── */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: "1rem", marginBottom: "2rem" }}>
+          <StatCard icon="fa-box-open" iconColor="#22c55e" label="Total Produk" value={String(products.length)} />
+          <StatCard icon="fa-cubes-stacked" iconColor="#f59e0b" label="Total Stok" value={totalStock.toLocaleString("id-ID")} />
+          <StatCard icon="fa-circle-check" iconColor="#4ade80" label="Stok Tersedia" value={String(inStock)} />
+          <StatCard icon="fa-circle-xmark" iconColor="#f87171" label="Stok Habis" value={String(outOfStock)} />
+        </div>
+
+        {/* ── Product Table Card ── */}
+        <div className="glass-card" style={{ padding: "2rem" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem", marginBottom: "1.75rem" }}>
+            <div>
+              <h2 style={{ fontSize: "1.125rem", fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "4px" }}>
+                Daftar Produk
+              </h2>
+              <p style={{ fontSize: "12px", fontWeight: 700, color: "#8b949e" }}>
+                {filtered.length} produk ditemukan
+              </p>
+            </div>
+            <button
+              className="btn-primary"
+              onClick={() => setModal({ type: "add" })}
             >
-              <Plus size={20} /> Tambah Produk
+              <i className="fas fa-plus" /> Tambah Produk Baru
             </button>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
+          <div style={{ overflowX: "auto" }}>
+            <table className="data-table">
               <thead>
-                <tr className="text-xs uppercase tracking-[0.2em] text-gray-500 border-b border-white/5">
-                  <th className="pb-4 font-black">Produk</th>
-                  <th className="pb-4 font-black">Kategori</th>
-                  <th className="pb-4 font-black">Harga</th>
-                  <th className="pb-4 font-black">Stok</th>
-                  <th className="pb-4 font-black text-right">Aksi</th>
+                <tr>
+                  <th>Produk</th>
+                  <th>Harga</th>
+                  <th>Stok</th>
+                  <th>Status</th>
+                  <th style={{ textAlign: "right" }}>Aksi</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
+              <tbody>
                 {loading ? (
-                  <tr><td colSpan={5} className="py-20 text-center text-gray-500 font-bold uppercase tracking-widest">Loading data...</td></tr>
-                ) : products.map((product) => (
-                  <tr key={product.id} className="group hover:bg-white/[0.02] transition-colors">
-                    <td className="py-6">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl overflow-hidden bg-white/5 border border-white/10">
-                          <img src={product.imageUrl || "/img/ayam1.jpg"} alt="" className="w-full h-full object-cover" />
-                        </div>
-                        <span className="font-black tracking-tight">{product.name}</span>
-                      </div>
-                    </td>
-                    <td className="py-6"><span className="bg-white/5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest text-gray-400">Ayam Segar</span></td>
-                    <td className="py-6 font-black text-primary">Rp {Number(product.price).toLocaleString()}</td>
-                    <td className="py-6">
-                      <span className={`flex items-center gap-2 font-bold text-xs ${product.stock > 0 ? 'text-green-500' : 'text-red-500'}`}>
-                        <div className={`w-1.5 h-1.5 rounded-full ${product.stock > 0 ? 'bg-green-500' : 'bg-red-500'}`} />
-                        {product.stock > 0 ? 'In Stock' : 'Out of Stock'}
-                      </span>
-                    </td>
-                    <td className="py-6 text-right">
-                      <button 
-                        onClick={() => handleDelete(product.id)}
-                        className="p-2 hover:bg-red-500/10 text-gray-500 hover:text-red-500 rounded-xl transition-all"
-                      >
-                        <Trash2 size={18} />
-                      </button>
+                  <tr>
+                    <td colSpan={5} style={{ textAlign: "center", padding: "4rem", color: "#8b949e", fontWeight: 700 }}>
+                      <i className="fas fa-circle-notch spin" style={{ fontSize: "24px", color: "#22c55e", display: "block", marginBottom: "12px" }} />
+                      Memuat data dari database...
                     </td>
                   </tr>
-                ))}
+                ) : filtered.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} style={{ textAlign: "center", padding: "4rem", color: "#8b949e", fontWeight: 700 }}>
+                      <i className="fas fa-box-open" style={{ fontSize: "2rem", display: "block", marginBottom: "12px" }} />
+                      Tidak ada produk ditemukan.
+                    </td>
+                  </tr>
+                ) : (
+                  filtered.map((p) => (
+                    <tr key={p.id}>
+                      {/* Product info */}
+                      <td>
+                        <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+                          <div style={{ width: "52px", height: "52px", borderRadius: "12px", overflow: "hidden", border: "1px solid rgba(255,255,255,0.07)", flexShrink: 0 }}>
+                            <img
+                              src={p.imageUrl || "/img/ayam1.jpg"}
+                              alt={p.name}
+                              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                              onError={(e: any) => { e.target.src = "/img/ayam1.jpg"; }}
+                            />
+                          </div>
+                          <div>
+                            <div style={{ fontWeight: 800, fontSize: "14px", marginBottom: "2px" }}>{p.name}</div>
+                            {p.description && (
+                              <div style={{ fontSize: "12px", color: "#8b949e", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "200px" }}>
+                                {p.description}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* Price */}
+                      <td style={{ color: "#22c55e", fontWeight: 800 }}>
+                        Rp {Number(p.price).toLocaleString("id-ID")}
+                      </td>
+
+                      {/* Stock */}
+                      <td style={{ fontWeight: 800 }}>
+                        {p.stock.toLocaleString("id-ID")}
+                      </td>
+
+                      {/* Status */}
+                      <td>
+                        {p.stock > 10 ? (
+                          <span className="badge-green">Tersedia</span>
+                        ) : p.stock > 0 ? (
+                          <span className="badge-gold">Stok Rendah</span>
+                        ) : (
+                          <span className="badge-red">Habis</span>
+                        )}
+                      </td>
+
+                      {/* Actions */}
+                      <td style={{ textAlign: "right" }}>
+                        <div style={{ display: "inline-flex", gap: "8px" }}>
+                          <button
+                            className="btn-edit"
+                            onClick={() => setModal({ type: "edit", product: p })}
+                          >
+                            <i className="fas fa-pen-to-square" /> Edit
+                          </button>
+                          <button
+                            className="btn-danger"
+                            onClick={() => handleDelete(p.id)}
+                            disabled={deleteId === p.id}
+                          >
+                            {deleteId === p.id ? (
+                              <i className="fas fa-circle-notch spin" />
+                            ) : (
+                              <i className="fas fa-trash" />
+                            )}
+                            {" "}Hapus
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
-        </motion.div>
+        </div>
       </main>
 
-      {/* Modal */}
-      <AnimatePresence>
-        {isModalOpen && (
-          <div className="fixed inset-0 z-[200] flex items-center justify-center p-8">
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsModalOpen(false)}
-              className="absolute inset-0 bg-background/80 backdrop-blur-xl"
-            />
-            <motion.div 
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="relative w-full max-w-lg glass-card rounded-[40px] p-10 overflow-hidden"
-            >
-              <div className="flex justify-between items-center mb-10">
-                <h3 className="text-2xl font-black uppercase tracking-tight">Tambah <span className="text-primary">Produk Ayam</span></h3>
-                <button onClick={() => setIsModalOpen(false)} className="text-gray-500 hover:text-white transition-colors">✕</button>
-              </div>
+      {/* ═══════════════════════════════
+          MODAL (Add / Edit)
+      ══════════════════════════════ */}
+      {modal.type !== "closed" && (
+        <div
+          style={{
+            position: "fixed", inset: 0, zIndex: 200,
+            display: "flex", alignItems: "center", justifyContent: "center", padding: "1.5rem",
+          }}
+          className="animate-fade-in"
+        >
+          {/* Backdrop */}
+          <div
+            style={{ position: "absolute", inset: 0, background: "rgba(13,17,23,0.88)", backdropFilter: "blur(16px)" }}
+            onClick={() => setModal({ type: "closed" })}
+          />
 
-              <form onSubmit={handleAdd} className="space-y-6">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Nama Produk</label>
-                  <input name="name" type="text" placeholder="Contoh: Ayam Kampung Utuh" className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 focus:outline-none focus:border-primary transition-colors font-bold" required />
+          {/* Card */}
+          <div
+            className="glass-card animate-slide-in"
+            style={{ position: "relative", zIndex: 10, width: "100%", maxWidth: "520px", padding: "2.5rem" }}
+          >
+            {/* Modal header */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2rem" }}>
+              <h3 style={{ fontSize: "1.25rem", fontWeight: 900, letterSpacing: "-0.02em" }}>
+                {modal.type === "edit" ? (
+                  <>Edit <span style={{ color: "#22c55e" }}>Produk</span></>
+                ) : (
+                  <>Tambah <span style={{ color: "#22c55e" }}>Produk Baru</span></>
+                )}
+              </h3>
+              <button
+                onClick={() => setModal({ type: "closed" })}
+                style={{ width: "36px", height: "36px", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)", color: "#8b949e", cursor: "pointer", fontSize: "16px" }}
+              >
+                <i className="fas fa-times" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+                {/* Name */}
+                <div>
+                  <label className="form-label">Nama Produk *</label>
+                  <input
+                    name="name"
+                    type="text"
+                    className="form-input"
+                    placeholder="Contoh: Ayam Broiler Utuh 1 Ekor"
+                    defaultValue={modal.type === "edit" ? modal.product.name : ""}
+                    required
+                  />
                 </div>
-                
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Harga (Rp)</label>
-                    <input name="price" type="number" placeholder="35000" className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 focus:outline-none focus:border-primary transition-colors font-bold" required />
+
+                {/* Price + Stock */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                  <div>
+                    <label className="form-label">Harga (Rp) *</label>
+                    <input
+                      name="price"
+                      type="number"
+                      className="form-input"
+                      placeholder="35000"
+                      min="0"
+                      defaultValue={modal.type === "edit" ? modal.product.price : ""}
+                      required
+                    />
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Stok</label>
-                    <input name="stock" type="number" placeholder="100" className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 focus:outline-none focus:border-primary transition-colors font-bold" required />
+                  <div>
+                    <label className="form-label">Stok *</label>
+                    <input
+                      name="stock"
+                      type="number"
+                      className="form-input"
+                      placeholder="100"
+                      min="0"
+                      defaultValue={modal.type === "edit" ? modal.product.stock : ""}
+                      required
+                    />
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">URL Gambar</label>
-                  <input name="imageUrl" type="url" placeholder="https://..." className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 focus:outline-none focus:border-primary transition-colors font-bold text-xs" required />
+                {/* Description */}
+                <div>
+                  <label className="form-label">Deskripsi</label>
+                  <input
+                    name="description"
+                    type="text"
+                    className="form-input"
+                    placeholder="Deskripsi singkat produk (opsional)"
+                    defaultValue={modal.type === "edit" ? (modal.product.description || "") : ""}
+                  />
                 </div>
 
-                <button type="submit" className="w-full bg-primary hover:bg-primary-dark p-5 rounded-2xl font-black uppercase tracking-[0.2em] shadow-xl shadow-primary/20 transition-all mt-6">
-                  Simpan Produk
+                {/* Image URL */}
+                <div>
+                  <label className="form-label">URL Gambar *</label>
+                  <input
+                    name="imageUrl"
+                    type="url"
+                    className="form-input"
+                    placeholder="https://..."
+                    defaultValue={modal.type === "edit" ? (modal.product.imageUrl || "") : ""}
+                    required
+                  />
+                  {modal.type === "edit" && modal.product.imageUrl && (
+                    <div style={{ marginTop: "10px", borderRadius: "12px", overflow: "hidden", height: "80px", border: "1px solid rgba(255,255,255,0.07)" }}>
+                      <img src={modal.product.imageUrl} alt="Preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    </div>
+                  )}
+                </div>
+
+                {/* Submit */}
+                <button
+                  type="submit"
+                  className="btn-primary"
+                  style={{ width: "100%", justifyContent: "center", padding: "1rem", marginTop: "0.5rem" }}
+                  disabled={saving}
+                >
+                  {saving ? (
+                    <><i className="fas fa-circle-notch spin" /> Menyimpan...</>
+                  ) : modal.type === "edit" ? (
+                    <><i className="fas fa-floppy-disk" /> Simpan Perubahan</>
+                  ) : (
+                    <><i className="fas fa-plus" /> Tambah Produk</>
+                  )}
                 </button>
-              </form>
-            </motion.div>
+              </div>
+            </form>
           </div>
-        )}
-      </AnimatePresence>
+        </div>
+      )}
     </div>
   );
 }
 
-function SidebarLink({ icon, label, active }: any) {
+function StatCard({ icon, iconColor, label, value }: { icon: string; iconColor: string; label: string; value: string }) {
   return (
-    <a href="#" className={`flex items-center gap-4 px-6 py-4 rounded-2xl transition-all font-bold text-sm ${active ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}>
-      {icon} <span>{label}</span>
-    </a>
-  );
-}
-
-function StatCard({ label, value, icon, change }: any) {
-  return (
-    <div className="glass-card p-6 rounded-[24px]">
-      <div className="flex justify-between items-start mb-4">
-        <div className="p-3 bg-white/5 rounded-xl border border-white/10">
-          {icon}
-        </div>
-        <span className="text-[10px] font-black text-primary bg-primary/10 px-2 py-1 rounded-lg uppercase">{change}</span>
+    <div className="stat-card">
+      <div style={{ fontSize: "1.75rem", color: iconColor, marginBottom: "12px" }}>
+        <i className={`fas ${icon}`} />
       </div>
-      <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1">{label}</p>
-      <h3 className="text-2xl font-black tracking-tight">{value}</h3>
+      <div style={{ fontSize: "10px", fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.2em", color: "#8b949e", marginBottom: "4px" }}>
+        {label}
+      </div>
+      <div style={{ fontSize: "1.75rem", fontWeight: 900, letterSpacing: "-0.02em" }}>{value}</div>
     </div>
   );
 }

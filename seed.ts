@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { db } from "./src/db/index.ts";
+import { db } from "./src/db/index";
 import { products } from "./src/db/schema";
 import { sql } from "drizzle-orm";
 

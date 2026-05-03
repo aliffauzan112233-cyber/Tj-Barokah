@@ -1,202 +1,260 @@
-"use client";
-
-import React from "react";
-import { motion } from "framer-motion";
-import { ArrowRight, ShoppingCart, CheckCircle2, Star, WhatsApp } from "lucide-react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import Link from "next/link";
 
+const features = [
+  { icon: "fa-certificate", title: "100% Halal", desc: "Proses pemotongan sesuai syariat Islam dengan sertifikat Halal resmi dari MUI." },
+  { icon: "fa-temperature-low", title: "Selalu Segar", desc: "Ayam dipotong setiap hari dan disimpan pada suhu optimal untuk menjaga kesegaran." },
+  { icon: "fa-shield-halved", title: "Higienis & Bersih", desc: "Proses penanganan produk dengan standar kebersihan tinggi di setiap tahapan." },
+  { icon: "fa-truck-fast", title: "Pengiriman Cepat", desc: "Layanan pengiriman ke seluruh Banyumas dan sekitarnya setiap hari kerja." },
+];
+
+const products = [
+  {
+    name: "Ayam Broiler Utuh",
+    category: "Ayam Utuh",
+    price: "Rp 35.000",
+    unit: "/ Ekor",
+    rating: "4.9",
+    img: "/img/ayam1.jpg",
+    badge: "Best Seller",
+    badgeColor: "badge-gold",
+  },
+  {
+    name: "Fillet Dada Ayam",
+    category: "Ayam Potong",
+    price: "Rp 55.000",
+    unit: "/ Kg",
+    rating: "4.8",
+    img: "https://images.unsplash.com/photo-1604503468506-a8da13d82791?auto=format&fit=crop&w=800&q=80",
+    badge: "Favorit",
+    badgeColor: "badge-green",
+  },
+  {
+    name: "Telur Ayam Negeri",
+    category: "Telur Segar",
+    price: "Rp 28.000",
+    unit: "/ Kg",
+    rating: "5.0",
+    img: "https://images.unsplash.com/photo-1516733978644-10ef0c0ceaf6?auto=format&fit=crop&w=800&q=80",
+    badge: "Segar Setiap Hari",
+    badgeColor: "badge-green",
+  },
+];
+
 export default function HomePage() {
-  const fadeInUp = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.6 }
-  };
-
   return (
-    <div className="min-h-screen font-outfit text-white">
-      {/* Background Ornaments */}
-      <div className="bg-ornament w-[500px] h-[500px] bg-primary top-[-250px] left-[-250px]" />
-      <div className="bg-ornament w-[500px] h-[500px] bg-secondary bottom-[-250px] right-[-250px]" />
+    <div className="min-h-screen">
+      <Navbar />
 
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full z-[100] glass border-b border-white/5 py-4 px-8 flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
-            <span className="font-black text-xl">TJB</span>
+      {/* ────── HERO ────── */}
+      <section
+        id="home"
+        className="relative min-h-screen flex items-center justify-center text-center px-6 pt-24 pb-16 overflow-hidden"
+      >
+        {/* Blobs */}
+        <div className="blob w-[600px] h-[600px] bg-primary top-[-200px] left-[-200px]" />
+        <div className="blob w-[500px] h-[500px] bg-gold bottom-[-200px] right-[-200px]" />
+
+        {/* Hero grid bg */}
+        <div className="absolute inset-0 z-0" style={{
+          backgroundImage: "linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px)",
+          backgroundSize: "60px 60px"
+        }} />
+
+        <div className="relative z-10 max-w-4xl mx-auto">
+          <div className="badge-green mb-8 inline-block animate-slide-in">
+            <i className="fas fa-certificate mr-2" />
+            Premium Poultry Supplier — Banyumas
           </div>
-          <div className="flex flex-col">
-            <span className="font-black text-lg leading-none tracking-tight">TRISNO JAYA</span>
-            <span className="text-secondary text-[10px] font-bold tracking-[0.2em]">BAROKAH</span>
+
+          <h1 className="text-5xl md:text-7xl font-black leading-tight mb-6 text-white">
+            Ayam Segar{" "}
+            <span className="text-grad">Berkualitas&nbsp;Premium</span>
+            <br />
+            Langsung ke Pintu Anda
+          </h1>
+
+          <p className="text-lg md:text-xl mb-12 max-w-2xl mx-auto leading-relaxed" style={{ color: "var(--muted)" }}>
+            Menyediakan ayam broiler, ayam kampung, potongan pilihan, dan telur segar.
+            Higienis, 100% Halal, dan siap diantar ke lokasi Anda.
+          </p>
+
+          <div className="flex flex-wrap gap-4 justify-center">
+            <Link href="/products" className="btn-gold text-base px-10 py-4 font-black">
+              <i className="fas fa-basket-shopping" /> Lihat Katalog Lengkap
+            </Link>
+            <Link href="https://wa.me/6285229608785" target="_blank" className="btn-ghost text-base px-10 py-4">
+              <i className="fab fa-whatsapp text-green-500" /> Pesan via WhatsApp
+            </Link>
+          </div>
+
+          {/* Trust badges */}
+          <div className="flex flex-wrap gap-6 justify-center mt-16 text-xs font-black uppercase tracking-widest" style={{ color: "var(--muted)" }}>
+            {["100% Halal MUI", "10+ Tahun Pengalaman", "5.000+ Pelanggan Puas", "Gratis Ongkir*"].map((t) => (
+              <div key={t} className="flex items-center gap-2">
+                <i className="fas fa-check-circle text-primary-light" />
+                <span>{t}</span>
+              </div>
+            ))}
           </div>
         </div>
-        
-        <div className="hidden md:flex gap-8 text-sm font-bold uppercase tracking-widest text-gray-400">
-          <a href="#home" className="hover:text-primary transition-colors text-primary">Beranda</a>
-          <a href="#products" className="hover:text-primary transition-colors">Produk</a>
-          <a href="#about" className="hover:text-primary transition-colors">Tentang</a>
-          <a href="#contact" className="hover:text-primary transition-colors">Kontak</a>
-        </div>
-
-        <Link href="https://wa.me/6285229608785" target="_blank" className="bg-primary hover:bg-primary-dark px-6 py-3 rounded-full font-bold flex items-center gap-2 transition-all transform active:scale-95 shadow-lg shadow-primary/20">
-          <i className="fab fa-whatsapp"></i>
-          <span>Pesan Sekarang</span>
-        </Link>
-      </nav>
-
-      {/* Hero Section */}
-      <section id="home" className="pt-40 pb-20 px-8 flex flex-col items-center text-center">
-        <motion.div 
-          {...fadeInUp}
-          className="bg-white/5 border border-white/10 px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest text-secondary mb-8"
-        >
-          ✨ Premium Poultry Supplier
-        </motion.div>
-        
-        <motion.h1 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
-          className="text-6xl md:text-8xl font-black mb-6 max-w-4xl"
-        >
-          Kualitas Ayam Segar <span className="text-gradient">Terbaik & Higienis</span>
-        </motion.h1>
-        
-        <motion.p 
-          {...fadeInUp}
-          transition={{ delay: 0.2 }}
-          className="text-gray-400 text-lg md:text-xl max-w-2xl mb-12"
-        >
-          Menyediakan ayam potong kualitas premium untuk kebutuhan rumah tangga dan bisnis kuliner Anda dengan jaminan 100% Halal dan Segar.
-        </motion.p>
-
-        <motion.div 
-          {...fadeInUp}
-          transition={{ delay: 0.4 }}
-          className="flex flex-col sm:flex-row gap-4"
-        >
-          <a href="#products" className="bg-secondary hover:bg-amber-600 px-10 py-5 rounded-2xl font-bold text-lg flex items-center gap-2 transition-all shadow-xl shadow-secondary/20">
-            Lihat Katalog <ArrowRight size={20} />
-          </a>
-          <a href="#contact" className="bg-white/5 border border-white/10 hover:bg-white/10 px-10 py-5 rounded-2xl font-bold text-lg transition-all backdrop-blur-md">
-            Hubungi Kami
-          </a>
-        </motion.div>
       </section>
 
-      {/* Featured Products */}
-      <section id="products" className="py-32 px-8 max-w-7xl mx-auto">
+      {/* ────── STATS ────── */}
+      <section className="py-16 px-6">
+        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
+          {[
+            { n: "10+", l: "Tahun Berpengalaman", icon: "fa-award", c: "text-primary-light" },
+            { n: "5K+", l: "Pelanggan Puas", icon: "fa-users", c: "text-gold" },
+            { n: "100%", l: "Bersertifikat Halal", icon: "fa-certificate", c: "text-primary-light" },
+            { n: "Daily", l: "Pemotongan Segar", icon: "fa-calendar-check", c: "text-gold" },
+          ].map((s) => (
+            <div key={s.l} className="stat-card flex items-center gap-5 hover-lift">
+              <div className={`text-3xl ${s.c}`}><i className={`fas ${s.icon}`} /></div>
+              <div>
+                <div className={`text-2xl font-black ${s.c}`}>{s.n}</div>
+                <div className="text-[11px] font-black uppercase tracking-widest mt-0.5" style={{ color: "var(--muted)" }}>{s.l}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ────── KEUNGGULAN ────── */}
+      <section id="features" className="section max-w-6xl mx-auto">
+        <div className="text-center mb-16">
+          <p className="section-label"><i className="fas fa-star mr-2" />Mengapa Memilih Kami</p>
+          <h2 className="section-title">
+            Standar Tertinggi untuk Setiap <span className="text-grad">Potongan Ayam</span>
+          </h2>
+          <p className="section-sub max-w-xl mx-auto">
+            Kami tidak sekadar menjual ayam. Kami memastikan setiap produk memenuhi standar kualitas dan kebersihan terbaik.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {features.map((f) => (
+            <div key={f.title} className="glass-card p-8 hover-lift text-center">
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-6 mx-auto" style={{ background: "rgba(22,163,74,0.1)", border: "1px solid rgba(22,163,74,0.2)", color: "var(--primary-light)" }}>
+                <i className={`fas ${f.icon}`} />
+              </div>
+              <h3 className="font-black text-lg mb-3">{f.title}</h3>
+              <p className="text-sm leading-relaxed" style={{ color: "var(--muted)" }}>{f.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ────── PRODUK UNGGULAN ────── */}
+      <section id="products" className="section max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
           <div>
-            <h2 className="text-4xl md:text-5xl font-black mb-4 uppercase">Pilihan Produk <span className="text-primary">Unggulan</span></h2>
-            <p className="text-gray-400 text-lg">Daging ayam pilihan, dipotong segar setiap hari.</p>
+            <p className="section-label"><i className="fas fa-basket-shopping mr-2" />Katalog Produk</p>
+            <h2 className="section-title m-0">Pilihan <span className="text-grad">Produk Unggulan</span></h2>
           </div>
-          <div className="flex gap-2">
-            <span className="bg-primary/10 text-primary px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-widest">Ayam Utuh</span>
-            <span className="bg-secondary/10 text-secondary px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-widest">Ayam Potong</span>
-            <span className="bg-amber-500/10 text-amber-500 px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-widest">Telur Segar</span>
-          </div>
+          <Link href="/products" className="btn-ghost text-sm">
+            Lihat Semua Produk <i className="fas fa-arrow-right ml-1" />
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <ProductCard 
-            title="Ayam Broiler Utuh" 
-            price="Rp 35.000" 
-            image="/img/ayam1.jpg" 
-            category="Ayam Utuh"
-            rating="4.9"
-            badge="Best Seller"
-          />
-          <ProductCard 
-            title="Fillet Dada Ayam" 
-            price="Rp 55.000" 
-            image="https://images.unsplash.com/photo-1604503468506-a8da13d82791?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-            category="Ayam Potong"
-            rating="4.8"
-          />
-          <ProductCard 
-            title="Telur Ayam Negeri" 
-            price="Rp 28.000" 
-            image="https://images.unsplash.com/photo-1516733978644-10ef0c0ceaf6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-            category="Telur"
-            rating="5.0"
-            badge="Paling Segar"
-          />
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-20 glass border-y border-white/5">
-        <div className="max-w-7xl mx-auto px-8 grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
-          <div>
-            <h4 className="text-4xl font-black text-primary mb-2">10+</h4>
-            <p className="text-xs uppercase tracking-[0.2em] font-bold text-gray-500">Tahun Pengalaman</p>
-          </div>
-          <div>
-            <h4 className="text-4xl font-black text-secondary mb-2">5K+</h4>
-            <p className="text-xs uppercase tracking-[0.2em] font-bold text-gray-500">Pelanggan Puas</p>
-          </div>
-          <div>
-            <h4 className="text-4xl font-black text-primary mb-2">100%</h4>
-            <p className="text-xs uppercase tracking-[0.2em] font-bold text-gray-500">Jaminan Halal</p>
-          </div>
-          <div>
-            <h4 className="text-4xl font-black text-secondary mb-2">24/7</h4>
-            <p className="text-xs uppercase tracking-[0.2em] font-bold text-gray-500">Layanan Pesan</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="py-20 px-8 border-t border-white/5">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12 text-center md:text-left">
-          <div className="max-w-xs">
-            <div className="flex items-center gap-3 mb-6 justify-center md:justify-start">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center font-black">TJ</div>
-              <span className="font-black text-xl tracking-tight">TRISNO JAYA</span>
+          {products.map((p) => (
+            <div key={p.name} className="glass-card overflow-hidden hover-lift group">
+              <div className="relative h-56 overflow-hidden">
+                <img src={p.img} alt={p.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.6), transparent)" }} />
+                <div className="absolute top-4 left-4 flex gap-2 flex-wrap">
+                  <span className={p.badgeColor}>{p.badge}</span>
+                  <span className="badge-green">{p.category}</span>
+                </div>
+              </div>
+              <div className="p-6">
+                <div className="flex items-center gap-1 mb-3 text-gold text-xs font-black">
+                  <i className="fas fa-star" />
+                  <span>{p.rating}</span>
+                  <span className="font-bold ml-2" style={{ color: "var(--muted)" }}>Kualitas Terverifikasi</span>
+                </div>
+                <h3 className="font-black text-xl mb-4 group-hover:text-primary-light transition-colors">{p.name}</h3>
+                <div className="flex justify-between items-center pt-4" style={{ borderTop: "1px solid var(--border)" }}>
+                  <div>
+                    <span className="font-black text-2xl text-primary-light">{p.price}</span>
+                    <span className="text-xs ml-1 font-bold" style={{ color: "var(--muted)" }}>{p.unit}</span>
+                  </div>
+                  <Link href="https://wa.me/6285229608785" target="_blank" className="btn-primary text-xs px-4 py-2.5">
+                    <i className="fab fa-whatsapp" /> Pesan
+                  </Link>
+                </div>
+              </div>
             </div>
-            <p className="text-gray-500 text-sm">Supplier ayam potong segar terpercaya untuk keluarga Indonesia. Higienis, Halal, dan Berkualitas.</p>
-          </div>
-          <div className="flex gap-12 text-sm font-bold uppercase tracking-widest text-gray-500">
-            <Link href="/login" className="hover:text-secondary">Admin Login</Link>
-            <a href="#contact" className="hover:text-primary">Bantuan</a>
-            <a href="#" className="hover:text-primary">Kebijakan</a>
-          </div>
+          ))}
         </div>
-        <div className="text-center mt-20 text-xs text-gray-700 uppercase tracking-widest">
-          &copy; 2024 Trisno Jaya Barokah. Crafted with Premium Quality.
-        </div>
-      </footer>
-    </div>
-  );
-}
+      </section>
 
-function ProductCard({ title, price, image, category, rating, badge }: any) {
-  return (
-    <motion.div 
-      whileHover={{ y: -10 }}
-      className="glass-card rounded-[32px] overflow-hidden group p-2"
-    >
-      <div className="relative h-[250px] rounded-[24px] overflow-hidden">
-        <img src={image} alt={title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-        <div className="absolute top-4 left-4 flex gap-2">
-          <span className="bg-primary px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg shadow-primary/20">{category}</span>
-          {badge && <span className="bg-secondary px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg shadow-secondary/20">{badge}</span>}
+      {/* ────── TENTANG KAMI ────── */}
+      <section id="about" className="section max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+          <div className="relative">
+            <img
+              src="https://images.unsplash.com/photo-1587593810167-a84920ea0781?auto=format&fit=crop&w=800&q=80"
+              alt="Peternakan Trisno Jaya Barokah"
+              className="w-full rounded-3xl object-cover h-96 shadow-2xl"
+            />
+            {/* Floating badge */}
+            <div className="absolute -bottom-6 -right-6 glass-card p-6 rounded-2xl text-center shadow-xl">
+              <div className="text-4xl font-black text-primary-light">10+</div>
+              <div className="text-[10px] font-black uppercase tracking-widest mt-1" style={{ color: "var(--muted)" }}>Tahun<br />Pengalaman</div>
+            </div>
+          </div>
+          <div>
+            <p className="section-label"><i className="fas fa-leaf mr-2" />Tentang Kami</p>
+            <h2 className="section-title">Dedikasi Kami untuk <span className="text-grad">Keluarga Indonesia</span></h2>
+            <p className="section-sub mb-6">
+              Trisno Jaya Barokah hadir sebagai solusi kebutuhan protein hewani berkualitas tinggi bagi masyarakat Banyumas dan sekitarnya sejak lebih dari satu dekade.
+            </p>
+            <p className="text-sm leading-relaxed mb-8" style={{ color: "var(--muted)" }}>
+              Kami percaya kesehatan berawal dari kualitas bahan pangan. Oleh karena itu, setiap produk kami melalui proses seleksi ketat, penanganan higienis, dan pemotongan sesuai syariat Islam.
+            </p>
+            <div className="flex gap-8 mb-8">
+              {[{ n: "5.000+", l: "Pelanggan Puas" }, { n: "15+", l: "Mitra Bisnis" }].map((s) => (
+                <div key={s.l}>
+                  <div className="text-3xl font-black text-primary-light">{s.n}</div>
+                  <div className="text-xs font-black uppercase tracking-widest mt-1" style={{ color: "var(--muted)" }}>{s.l}</div>
+                </div>
+              ))}
+            </div>
+            <Link href="https://wa.me/6285229608785" target="_blank" className="btn-primary">
+              <i className="fab fa-whatsapp" /> Hubungi Kami Sekarang
+            </Link>
+          </div>
         </div>
-      </div>
-      <div className="p-6">
-        <div className="flex items-center gap-1 text-secondary mb-2 text-sm">
-          <Star size={14} fill="currentColor" />
-          <span className="font-black">{rating}</span>
-          <span className="text-gray-600 text-[10px] ml-2 font-bold uppercase tracking-widest">Verified quality</span>
+      </section>
+
+      {/* ────── KONTAK ────── */}
+      <section id="contact" className="section max-w-6xl mx-auto">
+        <div className="glass-card p-12 text-center relative overflow-hidden">
+          <div className="blob w-72 h-72 bg-primary top-[-100px] left-[-100px]" />
+          <div className="blob w-72 h-72 bg-gold bottom-[-100px] right-[-100px]" />
+          <div className="relative z-10">
+            <p className="section-label"><i className="fas fa-phone mr-2" />Kontak Kami</p>
+            <h2 className="section-title">Siap Melayani <span className="text-grad">Pesanan Anda</span></h2>
+            <p className="section-sub max-w-xl mx-auto mb-10">
+              Hubungi kami melalui WhatsApp untuk pemesanan, pertanyaan harga, atau pengiriman.
+            </p>
+            <div className="flex flex-wrap gap-4 justify-center">
+              <Link href="https://wa.me/6285229608785" target="_blank" className="btn-gold text-base px-10 py-4 font-black">
+                <i className="fab fa-whatsapp text-xl" /> Chat WhatsApp — 085229608785
+              </Link>
+            </div>
+            <div className="flex flex-wrap gap-8 justify-center mt-10 text-sm font-bold" style={{ color: "var(--muted)" }}>
+              <div className="flex items-center gap-2"><i className="fas fa-clock text-gold" /> 05:00 – 17:00 WIB</div>
+              <div className="flex items-center gap-2"><i className="fas fa-map-marker-alt text-red-500" /> Jatilawang, Banyumas</div>
+              <div className="flex items-center gap-2"><i className="fas fa-envelope text-primary-light" /> tjbarokah@gmail.com</div>
+            </div>
+          </div>
         </div>
-        <h3 className="text-xl font-black mb-2 tracking-tight group-hover:text-primary transition-colors">{title}</h3>
-        <div className="flex justify-between items-center mt-6 pt-6 border-t border-white/5">
-          <span className="text-2xl font-black text-primary">{price}</span>
-          <button className="bg-white/5 hover:bg-primary hover:text-white p-3 rounded-2xl transition-all group-hover:shadow-lg group-hover:shadow-primary/20">
-            <ShoppingCart size={20} />
-          </button>
-        </div>
-      </div>
-    </motion.div>
+      </section>
+
+      <Footer />
+    </div>
   );
 }

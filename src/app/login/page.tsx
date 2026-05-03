@@ -1,116 +1,147 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import { Lock, User, ArrowRight, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
     setLoading(true);
-    
-    // Simulate auth delay for "premium" feel
+
+    // Simulate auth check — replace with real server action if needed
     setTimeout(() => {
       if (username === "admin" && password === "admin") {
         router.push("/admin");
       } else {
-        alert("Username atau password salah.");
+        setError("Username atau password salah. Silakan coba lagi.");
         setLoading(false);
       }
-    }, 1000);
+    }, 900);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-8 font-outfit relative overflow-hidden">
-      {/* Ornaments */}
-      <div className="bg-ornament w-[600px] h-[600px] bg-primary top-[-300px] right-[-300px]" />
-      <div className="bg-ornament w-[600px] h-[600px] bg-secondary bottom-[-300px] left-[-300px]" />
+    <div
+      className="min-h-screen flex items-center justify-center px-6 relative overflow-hidden"
+      style={{ background: "var(--bg)" }}
+    >
+      {/* Blobs */}
+      <div className="blob w-[500px] h-[500px] bg-primary top-[-200px] right-[-200px]" />
+      <div className="blob w-[500px] h-[500px] bg-gold bottom-[-200px] left-[-200px]" />
 
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md"
-      >
+      {/* Grid bg */}
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px)",
+          backgroundSize: "60px 60px",
+        }}
+      />
+
+      <div className="relative z-10 w-full max-w-md">
+        {/* Logo */}
         <div className="text-center mb-10">
-          <Link href="/" className="inline-flex items-center gap-3 mb-8 hover:scale-105 transition-transform">
-            <div className="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center shadow-xl shadow-primary/20 font-black text-xl text-white">TJ</div>
-            <div className="text-left">
-              <span className="font-black text-xl block leading-none text-white uppercase tracking-tight">TRISNO JAYA</span>
-              <span className="text-secondary text-[10px] font-bold tracking-[0.2em]">BAROKAH</span>
+          <Link href="/" className="inline-flex flex-col items-center gap-3 group">
+            <div className="w-16 h-16 rounded-2xl bg-primary flex items-center justify-center font-black text-white text-2xl shadow-2xl shadow-green-900/40 group-hover:scale-105 transition-transform animate-pulse-glow">
+              TJ
+            </div>
+            <div>
+              <div className="font-black text-2xl tracking-tight text-white">TRISNO JAYA</div>
+              <div className="text-gold text-[10px] font-black tracking-[0.3em] uppercase">Barokah</div>
             </div>
           </Link>
-          <h2 className="text-3xl font-black text-white uppercase tracking-tight mb-2">Admin <span className="text-primary">Login</span></h2>
-          <p className="text-gray-500 font-bold text-sm uppercase tracking-widest">Portal Manajemen Dashboard</p>
+          <h1 className="text-3xl font-black mt-6 mb-2">
+            Admin <span className="text-grad">Login</span>
+          </h1>
+          <p className="text-sm font-bold uppercase tracking-widest" style={{ color: "var(--muted)" }}>
+            Portal Manajemen Trisno Jaya Barokah
+          </p>
         </div>
 
-        <div className="glass-card rounded-[40px] p-10 relative overflow-hidden">
-          <form onSubmit={handleSubmit} className="space-y-8">
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 ml-2">Username / Email</label>
+        {/* Card */}
+        <div className="glass-card p-10 animate-slide-in">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Error */}
+            {error && (
+              <div className="flex items-center gap-3 rounded-2xl p-4 text-sm font-bold" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", color: "#f87171" }}>
+                <i className="fas fa-triangle-exclamation" /> {error}
+              </div>
+            )}
+
+            {/* Username */}
+            <div>
+              <label className="form-label">Username</label>
               <div className="relative">
-                <User className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
-                <input 
-                  type="text" 
-                  placeholder="admin" 
-                  className="w-full bg-white/5 border border-white/10 rounded-3xl py-5 pl-14 pr-6 focus:outline-none focus:border-primary transition-all text-white font-bold"
-                  required 
+                <i className="fas fa-user absolute left-5 top-1/2 -translate-y-1/2 text-sm" style={{ color: "var(--muted)" }} />
+                <input
+                  id="username"
+                  type="text"
+                  className="form-input pl-12"
+                  placeholder="Masukkan username"
+                  required
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <div className="flex justify-between items-center ml-2">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Password</label>
-                <a href="#" className="text-[10px] font-black uppercase tracking-widest text-secondary hover:text-white transition-colors">Lupa sandi?</a>
+            {/* Password */}
+            <div>
+              <div className="flex justify-between items-center mb-2">
+                <label className="form-label m-0">Password</label>
+                <a href="#" className="text-[10px] font-black uppercase tracking-widest transition-colors hover:text-white" style={{ color: "var(--gold)" }}>Lupa sandi?</a>
               </div>
               <div className="relative">
-                <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
-                <input 
-                  type="password" 
-                  placeholder="••••••••" 
-                  className="w-full bg-white/5 border border-white/10 rounded-3xl py-5 pl-14 pr-6 focus:outline-none focus:border-primary transition-all text-white font-bold"
-                  required 
+                <i className="fas fa-lock absolute left-5 top-1/2 -translate-y-1/2 text-sm" style={{ color: "var(--muted)" }} />
+                <input
+                  id="password"
+                  type="password"
+                  className="form-input pl-12"
+                  placeholder="••••••••"
+                  required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
             </div>
 
-            <button 
-              type="submit" 
+            {/* Submit */}
+            <button
+              type="submit"
               disabled={loading}
-              className="w-full bg-primary hover:bg-primary-dark disabled:bg-gray-800 disabled:cursor-not-allowed py-6 rounded-3xl font-black uppercase tracking-[0.3em] text-white shadow-2xl shadow-primary/30 transition-all flex items-center justify-center gap-3 active:scale-95 group"
+              className="btn-primary w-full justify-center py-4 text-base font-black uppercase tracking-widest mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? "Authenticating..." : (
+              {loading ? (
                 <>
-                  <span>Masuk Panel</span>
-                  <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                  <i className="fas fa-circle-notch fa-spin" /> Memverifikasi...
+                </>
+              ) : (
+                <>
+                  <i className="fas fa-right-to-bracket" /> Masuk ke Dashboard
                 </>
               )}
             </button>
           </form>
 
-          <div className="mt-10 pt-8 border-t border-white/5 text-center">
-            <div className="flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-gray-600">
-              <ShieldCheck size={14} />
-              <span>Secure Encrypted Portal</span>
+          {/* Footer */}
+          <div className="mt-8 pt-6 flex flex-col items-center gap-4" style={{ borderTop: "1px solid var(--border)" }}>
+            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.2)" }}>
+              <i className="fas fa-shield-halved" /> Secure Encrypted Connection
             </div>
+            <Link href="/" className="text-xs font-bold transition-colors hover:text-white" style={{ color: "var(--muted)" }}>
+              <i className="fas fa-arrow-left mr-2" />Kembali ke Beranda
+            </Link>
           </div>
         </div>
-
-        <Link href="/" className="mt-10 text-gray-600 hover:text-white transition-colors font-black uppercase tracking-[0.2em] text-[10px] flex items-center justify-center gap-2">
-          ← Kembali ke Beranda
-        </Link>
-      </motion.div>
+      </div>
     </div>
   );
 }

@@ -14,31 +14,39 @@ export async function loginAction(formData: FormData) {
   });
 
   if (admin && admin.password === password) {
-    // In a real app, set a cookie/session here
     return { success: true };
   }
-
   return { success: false, error: "Invalid credentials" };
 }
 
 export async function getProducts() {
-  return await db.query.products.findMany();
+  return await db.query.products.findMany({
+    orderBy: (products, { desc }) => [desc(products.id)],
+  });
 }
 
 export async function addProduct(formData: FormData) {
   const name = formData.get("name") as string;
   const price = formData.get("price") as string;
-  const stock = parseInt(formData.get("stock") as string);
+  const stock = parseInt(formData.get("stock") as string) || 0;
   const imageUrl = formData.get("imageUrl") as string;
-  const description = formData.get("description") as string;
+  const description = (formData.get("description") as string) || null;
 
-  await db.insert(products).values({
-    name,
-    price: price,
-    stock,
-    imageUrl,
-    description,
-  });
+  await db.insert(products).values({ name, price, stock, imageUrl, description });
+  revalidatePath("/admin");
+}
+
+export async function updateProduct(id: number, formData: FormData) {
+  const name = formData.get("name") as string;
+  const price = formData.get("price") as string;
+  const stock = parseInt(formData.get("stock") as string) || 0;
+  const imageUrl = formData.get("imageUrl") as string;
+  const description = (formData.get("description") as string) || null;
+
+  await db
+    .update(products)
+    .set({ name, price, stock, imageUrl, description })
+    .where(eq(products.id, id));
 
   revalidatePath("/admin");
 }
