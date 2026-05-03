@@ -11,6 +11,9 @@ type Product = {
   stock: number;
   imageUrl: string | null;
   description: string | null;
+  address: string | null;
+  latitude: string | null;
+  longitude: string | null;
 };
 
 type ModalState =
@@ -365,22 +368,74 @@ export default function AdminPage() {
                   />
                 </div>
 
-                {/* Image URL */}
+                {/* Image Upload */}
                 <div>
-                  <label style={{ display: "block", fontSize: "10px", fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.2em", marginBottom: "0.5rem", color: "var(--text-muted)" }}>URL Gambar *</label>
+                  <label style={{ display: "block", fontSize: "10px", fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.2em", marginBottom: "0.5rem", color: "var(--text-muted)" }}>Upload Gambar (Lokal)</label>
+                  <input
+                    name="imageFile"
+                    type="file"
+                    accept="image/*"
+                    style={{ width: "100%", fontWeight: 600, fontSize: "0.875rem", padding: "0.875rem 1.25rem", borderRadius: "0.875rem", border: "1px solid var(--gray-300)", outline: "none", background: "var(--white)", color: "var(--text-main)" }}
+                  />
+                  <div style={{ margin: "10px 0", fontSize: "11px", color: "var(--text-muted)", fontWeight: 600 }}>Atau masukkan URL gambar:</div>
                   <input
                     name="imageUrl"
                     type="url"
                     style={{ width: "100%", fontWeight: 600, fontSize: "0.875rem", padding: "0.875rem 1.25rem", borderRadius: "0.875rem", border: "1px solid var(--gray-300)", outline: "none", background: "var(--white)", color: "var(--text-main)" }}
                     placeholder="https://..."
                     defaultValue={modal.type === "edit" ? (modal.product.imageUrl || "") : ""}
-                    required
                   />
                   {modal.type === "edit" && modal.product.imageUrl && (
                     <div style={{ marginTop: "10px", borderRadius: "12px", overflow: "hidden", height: "80px", border: "1px solid var(--gray-200)" }}>
                       <img src={modal.product.imageUrl} alt="Preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                     </div>
                   )}
+                </div>
+
+                {/* Location Section */}
+                <div style={{ borderTop: "1px solid var(--gray-200)", paddingTop: "1.25rem", marginTop: "0.5rem" }}>
+                  <h4 style={{ fontSize: "11px", fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--primary)", marginBottom: "1rem" }}>Maps Lokasi</h4>
+                  
+                  <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: "10px", fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.2em", marginBottom: "0.5rem", color: "var(--text-muted)" }}>Alamat Lengkap</label>
+                      <input
+                        name="address"
+                        type="text"
+                        style={{ width: "100%", fontWeight: 600, fontSize: "0.875rem", padding: "0.875rem 1.25rem", borderRadius: "0.875rem", border: "1px solid var(--gray-300)", outline: "none", background: "var(--white)", color: "var(--text-main)" }}
+                        placeholder="Contoh: Jl. Raya Jatilawang No. 12"
+                        defaultValue={modal.type === "edit" ? (modal.product.address || "") : ""}
+                      />
+                    </div>
+                    
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                      <div>
+                        <label style={{ display: "block", fontSize: "10px", fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.2em", marginBottom: "0.5rem", color: "var(--text-muted)" }}>Latitude</label>
+                        <input
+                          name="latitude"
+                          type="text"
+                          style={{ width: "100%", fontWeight: 600, fontSize: "0.875rem", padding: "0.875rem 1.25rem", borderRadius: "0.875rem", border: "1px solid var(--gray-300)", outline: "none", background: "var(--white)", color: "var(--text-main)" }}
+                          placeholder="-7.123456"
+                          defaultValue={modal.type === "edit" ? (modal.product.latitude || "") : ""}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: "block", fontSize: "10px", fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.2em", marginBottom: "0.5rem", color: "var(--text-muted)" }}>Longitude</label>
+                        <input
+                          name="longitude"
+                          type="text"
+                          style={{ width: "100%", fontWeight: 600, fontSize: "0.875rem", padding: "0.875rem 1.25rem", borderRadius: "0.875rem", border: "1px solid var(--gray-300)", outline: "none", background: "var(--white)", color: "var(--text-main)" }}
+                          placeholder="109.123456"
+                          defaultValue={modal.type === "edit" ? (modal.product.longitude || "") : ""}
+                        />
+                      </div>
+                    </div>
+                    
+                    <div style={{ fontSize: "11px", color: "var(--text-muted)", background: "var(--light)", padding: "10px", borderRadius: "10px", border: "1px solid var(--gray-200)" }}>
+                      <i className="fas fa-circle-info" style={{ color: "var(--secondary)", marginRight: "6px" }} />
+                      Koordinat ini akan digunakan untuk menampilkan lokasi di Google Maps pada website.
+                    </div>
+                  </div>
                 </div>
 
                 {/* Submit */}

@@ -65,7 +65,16 @@ export default function HomePage() {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="hero" id="home">
+      <section 
+        className="hero" 
+        id="home"
+        style={{ 
+          background: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1516467508483-a7212febe31a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed'
+        }}
+      >
         <div className="hero-content" data-aos="fade-up">
           <span className="sub-title" style={{ background: "rgba(255,255,255,0.2)", color: "white" }}>
             Ayam Potong Trisno Jaya
@@ -270,6 +279,17 @@ export default function HomePage() {
                     <span>Lokasi Kami</span>
                     <p>Jatilawang, Tunjung, Kec. Jatilawang, Kabupaten Banyumas, Jawa Tengah 53174</p>
                   </div>
+                </div>
+                {/* Google Maps Embed */}
+                <div style={{ marginTop: "1.5rem", borderRadius: "1rem", overflow: "hidden", border: "1px solid var(--gray-200)", height: "250px", boxShadow: "var(--shadow-sm)" }}>
+                  <iframe 
+                    width="100%" 
+                    height="100%" 
+                    style={{ border: 0 }} 
+                    loading="lazy" 
+                    allowFullScreen 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15822.428464303494!2d109.1171875!3d-7.453125!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e65691f1a1a1a1a%3A0x1a1a1a1a1a1a1a1a!2sJatilawang%2C%20Banyumas!5e0!3m2!1sid!2sid!4v1714710000000!5m2!1sid!2sid"
+                  ></iframe>
                 </div>
               </div>
             </div>
