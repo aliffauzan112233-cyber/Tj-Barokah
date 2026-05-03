@@ -1,16 +1,9 @@
 import type { Metadata } from "next";
-import { Outfit } from "next/font/google";
 import "./globals.css";
 
-const outfit = Outfit({
-  subsets: ["latin"],
-  variable: "--font-outfit",
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-});
-
 export const metadata: Metadata = {
-  title: "TJB Admin | Trisno Jaya Barokah",
-  description: "Dashboard Admin Trisno Jaya Barokah",
+  title: "Trisno Jaya Barokah | Premium Poultry Supplier",
+  description: "Trisno Jaya Barokah menyediakan ayam potong segar, higienis, dan halal kualitas terbaik.",
 };
 
 export default function RootLayout({
@@ -20,7 +13,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id">
-      <body className={`${outfit.variable} antialiased`}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+      </head>
+      <body>
         {children}
       </body>
     </html>
